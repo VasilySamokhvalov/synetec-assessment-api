@@ -10,7 +10,7 @@ namespace SynetecAssessmentApi.Infrastructure.Repositories
 
         protected DbSet<TEntity> _dbSet;
 
-        public BaseRepository(AppDbContext applicationDbContext)
+        public BaseRepository()
         {
             var dbContextOptionBuilder = new DbContextOptionsBuilder<AppDbContext>();
             dbContextOptionBuilder.UseInMemoryDatabase(databaseName: "HrDb");

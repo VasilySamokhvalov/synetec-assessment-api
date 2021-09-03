@@ -8,7 +8,7 @@ namespace SynetecAssessmentApi.Infrastructure.Repositories
 {
     public class EmployeeRepository : BaseRepository<Employee>, IEmployeeRepository
     {
-        public EmployeeRepository(AppDbContext applicationDbContext) : base(applicationDbContext)
+        public EmployeeRepository(AppDbContext applicationDbContext) : base()
         {
             _applicationDbContext = applicationDbContext;
             _dbSet = applicationDbContext.Set<Employee>();

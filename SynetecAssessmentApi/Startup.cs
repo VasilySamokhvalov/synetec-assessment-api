@@ -5,7 +5,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using SynetecAssessmentApi.Domain.Repositories;
+using SynetecAssessmentApi.Domain.Services;
+using SynetecAssessmentApi.Domain.Services.Interfaces;
 using SynetecAssessmentApi.Infrastructure;
+using SynetecAssessmentApi.Infrastructure.Repositories;
 
 namespace SynetecAssessmentApi
 {
@@ -22,6 +26,8 @@ namespace SynetecAssessmentApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IBonusPoolService, BonusPoolService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SynetecAssessmentApi", Version = "v1" });

@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SynetecAssessmentApi.Persistence;
+using SynetecAssessmentApi.Infrastructure;
+using SynetecAssessmentApi.Infrastructure.Helpers;
 
 namespace SynetecAssessmentApi
 {

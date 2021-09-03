@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SynetecAssessmentApi.Domain.Models.Calculation.Requests;
 using SynetecAssessmentApi.Domain.Services.Interfaces;
 using System.Threading.Tasks;
 
@@ -16,16 +17,15 @@ namespace SynetecAssessmentApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-
-            return Ok(await _bonusPoolService.GetEmployeesAsync());
+            var result = await _bonusPoolService.GetEmployeesAsync();
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CalculateBonus([FromBody] CalculateBonusDto request)
+        public async Task<IActionResult> CalculateBonus([FromBody] CalculateBonusRequest request)
         {
-            return Ok(await bonusPoolService.CalculateAsync(
-                request.TotalBonusPoolAmount,
-                request.SelectedEmployeeId));
+            var result = await _bonusPoolService.CalculateAsync(request);
+            return Ok(result);
         }
     }
 }
