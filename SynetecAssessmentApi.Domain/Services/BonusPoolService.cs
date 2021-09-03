@@ -1,31 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SynetecAssessmentApi.Domain;
-using SynetecAssessmentApi.Dtos;
-using SynetecAssessmentApi.Persistence;
+﻿using SynetecAssessmentApi.Domain.Entities;
+using SynetecAssessmentApi.Domain.Models.Dtos;
+using SynetecAssessmentApi.Domain.Repositories;
+using SynetecAssessmentApi.Domain.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SynetecAssessmentApi.Services
+namespace SynetecAssessmentApi.Domain.Services
 {
-    public class BonusPoolService
+    public class BonusPoolService : IBonusPoolService
     {
-        private readonly AppDbContext _dbContext;
-
-        public BonusPoolService()
+        private readonly IEmployeeRepository _employeeRepository;
+        public BonusPoolService(IEmployeeRepository employeeRepository)
         {
+            _employeeRepository = employeeRepository;
             var dbContextOptionBuilder = new DbContextOptionsBuilder<AppDbContext>();
             dbContextOptionBuilder.UseInMemoryDatabase(databaseName: "HrDb");
 
-            _dbContext = new AppDbContext(dbContextOptionBuilder.Options);
+            //_dbContext = new AppDbContext(dbContextOptionBuilder.Options);
         }
 
         public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync()
         {
-            IEnumerable<Employee> employees = await _dbContext
-                .Employees
-                .Include(e => e.Department)
-                .ToListAsync();
+            IEnumerable<Employee> employees = await _employeeRepository.GetAllWithDepartments();
 
             List<EmployeeDto> result = new List<EmployeeDto>();
 
@@ -51,16 +49,10 @@ namespace SynetecAssessmentApi.Services
         public async Task<BonusPoolCalculatorResultDto> CalculateAsync(int bonusPoolAmount, int selectedEmployeeId)
         {
             //load the details of the selected employee using the Id
-            Employee employee = await _dbContext.Employees
-                .Include(e => e.Department)
-                .FirstOrDefaultAsync(item => item.Id == selectedEmployeeId);
+            Employee employee = await _employeeRepository.GetByIdWithDepartment(selectedEmployeeId);
 
             //get the total salary budget for the company
-            int totalSalary = (int)_dbContext.Employees.Sum(item => item.Salary);
-
-            //calculate the bonus allocation for the employee
-            decimal bonusPercentage = (decimal)employee.Salary / (decimal)totalSalary;
-            int bonusAllocation = (int)(bonusPercentage * bonusPoolAmount);
+            int totalSalary = await _employeeRepository.GetTotalSalary();
 
             return new BonusPoolCalculatorResultDto
             {
@@ -76,8 +68,15 @@ namespace SynetecAssessmentApi.Services
                     }
                 },
 
-                Amount = bonusAllocation
+                Amount = CalculateEmloyeeBonus(bonusPoolAmount, totalSalary, employee.Salary)
             };
+        }
+
+        private int CalculateEmloyeeBonus(int bonusPoolAmount, int totalSalary, int employeeSalary)
+        {
+            decimal bonusPercentage = employeeSalary / (decimal)totalSalary;
+            int bonusAllocation = (int)(bonusPercentage * bonusPoolAmount);
+            return bonusAllocation;
         }
     }
 }

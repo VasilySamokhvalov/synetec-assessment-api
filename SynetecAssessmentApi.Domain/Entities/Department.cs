@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SynetecAssessmentApi.Domain
+namespace SynetecAssessmentApi.Domain.Entities
 {
     public class Department : Entity
     {
