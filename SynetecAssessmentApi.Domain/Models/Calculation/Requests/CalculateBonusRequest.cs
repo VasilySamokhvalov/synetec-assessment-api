@@ -4,5 +4,11 @@
     {
         public int TotalBonusPoolAmount { get; set; }
         public int SelectedEmployeeId { get; set; }
+
+        public CalculateBonusRequest(int totalBonusPoolAmount, int selectedEmployeeId)
+        {
+            TotalBonusPoolAmount = totalBonusPoolAmount;
+            SelectedEmployeeId = selectedEmployeeId;
+        }
     }
 }
