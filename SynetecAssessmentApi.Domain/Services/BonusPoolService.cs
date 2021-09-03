@@ -25,18 +25,7 @@ namespace SynetecAssessmentApi.Domain.Services
 
             foreach (var employee in employees)
             {
-                result.Add(
-                    new EmployeeDto
-                    {
-                        Fullname = employee.Fullname,
-                        JobTitle = employee.JobTitle,
-                        Salary = employee.Salary,
-                        Department = new DepartmentDto
-                        {
-                            Title = employee.Department.Title,
-                            Description = employee.Department.Description
-                        }
-                    });
+                result.Add(MapEmployeeToEmployeeDto(employee));
             }
 
             return result;
@@ -61,22 +50,26 @@ namespace SynetecAssessmentApi.Domain.Services
 
             return new CalculateBonusResponse
             {
-                Employee = new EmployeeDto
-                {
-                    Fullname = employee.Fullname,
-                    JobTitle = employee.JobTitle,
-                    Salary = employee.Salary,
-                    Department = new DepartmentDto
-                    {
-                        Title = employee.Department.Title,
-                        Description = employee.Department.Description
-                    }
-                },
+                Employee = MapEmployeeToEmployeeDto(employee),
 
                 Amount = CalculateEmloyeeBonus(request.TotalBonusPoolAmount, totalSalary, employee.Salary)
             };
         }
 
+        private EmployeeDto MapEmployeeToEmployeeDto(Employee employee)
+        {
+            return new EmployeeDto
+            {
+                Fullname = employee.Fullname,
+                JobTitle = employee.JobTitle,
+                Salary = employee.Salary,
+                Department = new DepartmentDto
+                {
+                    Title = employee.Department.Title,
+                    Description = employee.Department.Description
+                }
+            };
+        }
         private int CalculateEmloyeeBonus(int bonusPoolAmount, int totalSalary, int employeeSalary)
         {
             decimal bonusPercentage = employeeSalary / (decimal)totalSalary;
